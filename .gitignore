@@ -1,9 +1,11 @@
 
 # dirs
-/.vscode
+/.vscode/
+/__pycache__/
 
 # files
 *.json
+*.log
 *.sh
 *.txt
 *main*
