@@ -8,3 +8,6 @@
 *.txt
 *main*
 *test*
+
+# whitelist
+!greeting.sh
