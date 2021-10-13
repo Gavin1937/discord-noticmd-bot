@@ -2,10 +2,10 @@ import os, sys
 import asyncio
 from io import TextIOWrapper
 import json
+from datetime import datetime
 import discord
 from discord import utils
 from My_Logger import *
-
 
 
 # setup discord client
@@ -123,6 +123,16 @@ async def send_msg():
         
     await asyncio.sleep(0)
 
+async def online_msg():
+    global channel
+    msg = f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] discord-noticmd-bot online!"
+    broadcastInfoMsg(msg)
+    await channel.send(msg)
+
+def offline_msg():
+    msg = f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] discord-noticmd-bot offline!"
+    broadcastInfoMsg(msg)
+
 @client.event
 async def read_fifo() -> None:
     global DATA
@@ -133,6 +143,7 @@ async def read_fifo() -> None:
 
 @client.event
 async def fifo_waiting_loop() -> None:
+    await online_msg()
     while True:
         await read_fifo()
 
@@ -143,6 +154,7 @@ if __name__ == "__main__":
         client.run(CONFIG["discord_token"])
         
         # post processing
+        offline_msg()
         fifo_listener.stop()
         fifo.close()
         client.loop.stop()

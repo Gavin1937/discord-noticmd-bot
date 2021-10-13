@@ -50,9 +50,7 @@ To run the script, simply run following command after you setup the **config.jso
 ```sh
 python discord_noticmd_bot.py
 ```
-After script outputting Guild name, Channel name, Admin name, and Admin MENTION_STR.
-
-You can start sending message to fifo
+After script outputting an online message, You can start sending message to fifo
 
 
 ## Testing
