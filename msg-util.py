@@ -1,5 +1,6 @@
 
 # Simple Utility Functions for working with discord-noticmd-bot
+# Import this file to other python scripts to interact with discrod-noticmd-bot
 
 import os
 
