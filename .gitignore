@@ -1,0 +1,10 @@
+
+# dirs
+/.vscode
+
+# files
+*.json
+*.sh
+*.txt
+*main*
+*test*
