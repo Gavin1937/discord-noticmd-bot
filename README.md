@@ -1,8 +1,13 @@
 
 # discord-noticmd-bot
 
-## A Discord Bot to handle Notification & Command using fifo (named pipe)
-## **This script ONLY WORK FOR Linux**
+<span style="font-size:1.5em;">
+A Discord Bot to handle Notification & Command using fifo (named pipe)
+</span>
+</br>
+<span style="font-size:1.5em;">
+<strong>This script ONLY WORK FOR Linux</strong>
+</span>
 
 
 ## Requirements
@@ -20,7 +25,7 @@ pip install discord.py
 
 You need to provide a **config.json** for the script.
 Here is a sample config file
-```json
+```
 {
     "fifo_path": "",          // Path to fifo, if fifo does not exist, script will create one
     "discord_token": "",      // Discord bot token
