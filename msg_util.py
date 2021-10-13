@@ -6,7 +6,7 @@ import os
 
 def send_message(fifopath:str, message:str) -> None:
     """
-    @Param: fifopath:  => string path to discord-noticmd-bot fifo
+    @Param: fifopath:  => string path to discord_noticmd_bot fifo
     @Param: message:   => utf-8 string message write to fifo
                           If message start with "@ " (e.g. "@ new messages...")
                           discord-noticmd-bot.py will mention the admin in this message.

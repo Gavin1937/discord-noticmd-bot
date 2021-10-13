@@ -48,7 +48,7 @@ Here is a sample config file
 
 To run the script, simply run following command after you setup the **config.json**
 ```sh
-python discord-noticmd-bot.py
+python discord_noticmd_bot.py
 ```
 After script outputting Guild name, Channel name, Admin name, and Admin MENTION_STR.
 
@@ -62,15 +62,15 @@ After you setup the script & successfully run it.
 You can run following command to test it.
 
 ```sh
-bash greeting.sh your-fifo-filename
+bash greeting.sh your_fifo_filename
 ```
 
 
 ## How It Works?
 
-**discord-noticmd-bot.py** will create a fifo (if not exist) and constantly trying to read from it.
+**discord_noticmd_bot.py** will create a fifo (if not exist) and constantly trying to read from it.
 
-Then, when you write to that fifo from another program, **discord-noticmd-bot.py** will catch that data and send it to Discord channel. 
+Then, when you write to that fifo from another program, **discord_noticmd_bot.py** will catch that data and send it to Discord channel. 
 
 [More About fifo](https://linux.die.net/man/7/fifo)
 
