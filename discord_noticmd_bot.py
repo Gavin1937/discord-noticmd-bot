@@ -88,12 +88,12 @@ async def on_ready():
                 MENTION_STR = member.mention
                 break
         
-    broadcastInfoMsg(f"Admin is: {mention_member}")
-    broadcastInfoMsg(f"Admin MENTION_STR: {MENTION_STR}")
+        broadcastInfoMsg(f"Admin is: {mention_member}")
+        broadcastInfoMsg(f"Admin MENTION_STR: {MENTION_STR}")
     
-    # init fifo & enter fifo_waiting_loop
-    await fifo_listener.create_task(init_fifo())
-    await fifo_listener.create_task(fifo_waiting_loop())
+        # init fifo & enter fifo_waiting_loop
+        await fifo_listener.create_task(init_fifo())
+        await fifo_listener.create_task(fifo_waiting_loop())
 
 @client.event
 async def on_resumed():
