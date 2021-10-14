@@ -5,6 +5,7 @@ import json
 from datetime import datetime
 import discord
 from discord import utils
+from discord.enums import TeamMembershipState
 from My_Logger import *
 
 
@@ -112,15 +113,33 @@ async def on_new_data(has_data):
 
 async def send_msg():
     global channel
-    if DATA and len(DATA) < 2000:
-        if DATA[0] == '@' and DATA[1] == ' ':
-            loc_msg = DATA.replace('@', MENTION_STR)
+    
+    # split DATA if it is too big
+    # discord.Channel.send() max msg length is 2000
+    # leave 50 bytes for MENTION_STR
+    data_list = []
+    bdata = bytes(DATA.encode("utf-8"))
+    old_idx = 0
+    tmp_list = [0, ""]
+    while tmp_list[0] < len(bdata):
+        tmp_list = cutUStrByBytes(
+            bdata[tmp_list[0]:].decode("utf-8"),
+            1950
+        )
+        tmp_list[0] += old_idx
+        old_idx = tmp_list[0]
+        data_list.append(tmp_list[1])
+    
+    # send all msgs in data_list
+    for msg in data_list:
+        if msg[0] == '@' and msg[1] == ' ':
+            loc_msg = msg.replace('@', MENTION_STR)
         else:
-            loc_msg = DATA
+            loc_msg = msg
         
         broadcastInfoMsg(f"Sending Message: {loc_msg}")
         await channel.send(loc_msg)
-        
+    
     await asyncio.sleep(0)
 
 async def online_msg():
@@ -146,6 +165,30 @@ async def fifo_waiting_loop() -> None:
     await online_msg()
     while True:
         await read_fifo()
+
+
+def cutUStrByBytes(data:str, max_byte:int) -> list:
+    """
+    Cut input \"data\" string to a new string within \"max_byte\".\n
+    If \"data\" is a utf-8 string, this function can keep its completion.
+    list[0] is byte index of input data
+    list[0] is cut unicode string
+    """
+    
+    bdata = bytes(data.encode("utf-8"))
+    blength = len(bdata)
+    idx = max_byte
+    
+    # go to last complete unicode character
+    if blength > max_byte:
+        while ((bdata[idx] & 0xc0) == 0x80):
+            # current byte is middle byte of an unicode character
+            idx -= 1 # move backward
+    
+    # after if statement above, idx is at
+    # one byte after the last complete unicode character
+    # return all characters from 0 to (idx-1)
+    return [idx, bdata[:idx].decode("utf-8")]
 
 
 if __name__ == "__main__":
