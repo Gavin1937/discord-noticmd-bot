@@ -98,7 +98,10 @@ async def on_ready():
 
 @client.event
 async def on_resumed():
-    # go back to fifo_waiting_loop
+    # reopen fifo & go back to fifo_waiting_loop
+    global fifo
+    fifo.close()
+    await fifo_listener.create_task(init_fifo())
     await fifo_listener.create_task(fifo_waiting_loop())
 
 @client.event
