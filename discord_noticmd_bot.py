@@ -68,6 +68,15 @@ async def init_fifo() -> None:
             broadcastErrorMsg(err)
             os._exit(-1)
 
+async def close_fifo() -> None:
+    global fifo
+    fifo.close()
+
+async def reinit_fifo() -> None:
+    "Call close_fifo() and then init_fifo()"
+    await close_fifo()
+    await init_fifo()
+
 
 @client.event
 async def on_ready():
@@ -99,9 +108,7 @@ async def on_ready():
 @client.event
 async def on_resumed():
     # reopen fifo & go back to fifo_waiting_loop
-    global fifo
-    fifo.close()
-    await fifo_listener.create_task(init_fifo())
+    await fifo_listener.create_task(reinit_fifo())
     await fifo_listener.create_task(fifo_waiting_loop())
 
 @client.event
@@ -161,7 +168,7 @@ async def read_fifo() -> None:
     DATA = fifo.read()
     if len(DATA) > 0: # has new data
         client.dispatch("new_data", True)
-    await asyncio.sleep(0.25)
+    await asyncio.sleep(1)
 
 @client.event
 async def fifo_waiting_loop() -> None:
@@ -201,8 +208,8 @@ if __name__ == "__main__":
         
         # post processing
         offline_msg()
-        fifo_listener.stop()
         fifo.close()
+        fifo_listener.stop()
         client.loop.stop()
         asyncio.get_event_loop().stop()
         
