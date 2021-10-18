@@ -167,6 +167,9 @@ async def read_fifo() -> None:
     global DATA
     DATA = fifo.read()
     if len(DATA) > 0: # has new data
+        # reinit fifo after successfully read data
+        await fifo_listener.create_task(reinit_fifo())
+        # trigger new_data event to handle data from fifo
         client.dispatch("new_data", True)
     await asyncio.sleep(1)
 
