@@ -32,6 +32,7 @@ CONFIG:dict
 
 # setup fifo variable
 fifo_listener = asyncio.get_event_loop()
+fifo_task:asyncio.Task
 fifo:TextIOWrapper
 
 
@@ -103,13 +104,18 @@ async def on_ready():
     
         # init fifo & enter fifo_waiting_loop
         await fifo_listener.create_task(init_fifo())
-        await fifo_listener.create_task(fifo_waiting_loop())
+        global fifo_task
+        fifo_task = asyncio.ensure_future(fifo_waiting_loop())
+        # await fifo_listener.create_task(fifo_waiting_loop())
 
 @client.event
 async def on_resumed():
     # reopen fifo & go back to fifo_waiting_loop
     await fifo_listener.create_task(reinit_fifo())
-    await fifo_listener.create_task(fifo_waiting_loop())
+    global fifo_task
+    fifo_task.cancel()
+    fifo_task = asyncio.ensure_future(fifo_waiting_loop())
+    # await fifo_listener.create_task(fifo_waiting_loop())
 
 @client.event
 async def on_message(message:discord.message):
