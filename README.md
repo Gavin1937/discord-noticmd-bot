@@ -16,7 +16,7 @@ A Discord Bot to handle Notification & Command using fifo (named pipe)
 |------------|----------------------------------------|
 | discord.py | latest (older version should work too) |
 
-### run following script to install required package
+### run following command to install required package
 ```sh
 pip install discord.py
 ```
