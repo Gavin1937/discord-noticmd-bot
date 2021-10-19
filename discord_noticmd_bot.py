@@ -106,7 +106,6 @@ async def on_ready():
         await fifo_listener.create_task(init_fifo())
         global fifo_task
         fifo_task = asyncio.ensure_future(fifo_waiting_loop())
-        # await fifo_listener.create_task(fifo_waiting_loop())
 
 @client.event
 async def on_resumed():
@@ -115,7 +114,6 @@ async def on_resumed():
     global fifo_task
     fifo_task.cancel()
     fifo_task = asyncio.ensure_future(fifo_waiting_loop())
-    # await fifo_listener.create_task(fifo_waiting_loop())
 
 @client.event
 async def on_message(message:discord.message):
@@ -219,6 +217,7 @@ if __name__ == "__main__":
         offline_msg()
         fifo.close()
         fifo_listener.stop()
+        fifo_task.cancel()
         client.loop.stop()
         asyncio.get_event_loop().stop()
         
