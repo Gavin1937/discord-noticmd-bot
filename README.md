@@ -21,10 +21,18 @@ A Discord Bot to handle Notification & Command using fifo (named pipe)
 pip install discord.py
 ```
 
+### Setup Discord Bot
+Checkout [This Tutorial](https://www.freecodecamp.org/news/create-a-discord-bot-with-python/)
+
+### Make sure you have token for your discord bot 
+
+### Make sure you create a new Discord guild/server
+
+
 ## Configuration
 
 You need to provide a **config.json** for the script.
-Here is a sample config file
+Here is a sample config template
 ```
 {
     "fifo_path": "",          // Path to fifo, if fifo does not exist, script will create one
@@ -46,18 +54,16 @@ Here is a sample config file
 
 ## Running
 
-To run the script, simply run following command after you setup the **config.json**
+To start the bot, simply run following command after you setup your **config.json**
 ```sh
 python discord_noticmd_bot.py
 ```
-After script outputting an online message, You can start sending message to fifo
+After the script outputting an online message, You can start sending message to fifo
 
 
 ## Testing
 
-After you setup the script & successfully run it.
-
-You can run following command to test it.
+To test the bot, you can run following command to let it send a greeting message.
 
 ```sh
 bash greeting.sh your_fifo_filename
@@ -66,9 +72,9 @@ bash greeting.sh your_fifo_filename
 
 ## How It Works?
 
-**discord_noticmd_bot.py** will create a fifo (if not exist) and constantly trying to read from it.
+**discord_noticmd_bot.py** will create a fifo pipe (if not exist) and constantly trying to read from it.
 
-Then, when you write to that fifo from another program, **discord_noticmd_bot.py** will catch that data and send it to Discord channel. 
+Then, when you write to that fifo from another program, **discord_noticmd_bot.py** will catch the data and send it to Discord channel. 
 
 [More About fifo](https://linux.die.net/man/7/fifo)
 
