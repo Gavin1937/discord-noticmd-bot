@@ -104,6 +104,7 @@ async def on_ready():
     
         # init fifo & enter fifo_waiting_loop
         await fifo_listener.create_task(init_fifo())
+        await online_msg()
         global fifo_task
         fifo_task = asyncio.ensure_future(fifo_waiting_loop())
 
@@ -111,6 +112,8 @@ async def on_ready():
 async def on_resumed():
     # reopen fifo & go back to fifo_waiting_loop
     await fifo_listener.create_task(reinit_fifo())
+    msg = f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] discord-noticmd-bot online!"
+    logger.info(msg)
     global fifo_task
     fifo_task.cancel()
     fifo_task = asyncio.ensure_future(fifo_waiting_loop())
@@ -179,7 +182,6 @@ async def read_fifo() -> None:
 
 @client.event
 async def fifo_waiting_loop() -> None:
-    await online_msg()
     while True:
         await read_fifo()
 
@@ -202,7 +204,7 @@ def cutUStrByBytes(data:str, max_byte:int) -> list:
             # current byte is middle byte of an unicode character
             idx -= 1 # move backward
     
-    # after if statement above, idx is at
+    # after the if statement above, idx is at
     # one byte after the last complete unicode character
     # return all characters from 0 to (idx-1)
     return [idx, bdata[:idx].decode("utf-8")]
