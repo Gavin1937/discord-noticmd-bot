@@ -133,7 +133,7 @@ async def send_msg():
     
     # split DATA if it is too big
     # discord.Channel.send() max msg length is 2000
-    # leave 50 bytes for MENTION_STR
+    # leave 150 bytes for MENTION_STR
     data_list = []
     bdata = bytes(DATA.encode("utf-8"))
     old_idx = 0
@@ -141,7 +141,7 @@ async def send_msg():
     while tmp_list[0] < len(bdata):
         tmp_list = cutUStrByBytes(
             bdata[tmp_list[0]:].decode("utf-8"),
-            1950
+            1850
         )
         tmp_list[0] += old_idx
         old_idx = tmp_list[0]
@@ -191,7 +191,7 @@ def cutUStrByBytes(data:str, max_byte:int) -> list:
     Cut input \"data\" string to a new string within \"max_byte\".\n
     If \"data\" is a utf-8 string, this function can keep its completion.
     list[0] is byte index of input data
-    list[0] is cut unicode string
+    list[1] is cut unicode string
     """
     
     bdata = bytes(data.encode("utf-8"))
