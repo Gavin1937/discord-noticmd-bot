@@ -94,7 +94,7 @@ async def on_ready():
     global MENTION_STR
     if len(MENTION_STR) == 0:
         for member in guild.members:
-            if str(member) == "Gavin1937#8571":
+            if str(member) == CONFIG["admin_discord_name"]:
                 mention_member:discord.Member = member
                 MENTION_STR = member.mention
                 break
