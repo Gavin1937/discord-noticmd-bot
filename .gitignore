@@ -5,7 +5,7 @@
 
 # files
 *.json
-*.log
+*.log*
 *.sh
 *.txt
 *main*
