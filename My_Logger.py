@@ -1,37 +1,50 @@
 import logging
-from logging.handlers import RotatingFileHandler
+import logging.config
 
-log_formatter = logging.Formatter("[%(levelname)s][%(asctime)s]:%(funcName)s - %(message)s")
+__all__ = [
+    "logger"
+]
 
+loggerName = "discord-noticmd-bot"
+loggerLevel = "DEBUG"
 logFile = "./discord-noticmd-bot.log"
+logFormatStr = "[%(levelname)s][%(asctime)s]:%(funcName)s - %(message)s"
 
-my_handler = RotatingFileHandler(logFile, mode='a', maxBytes=5*1024*1024, 
-                                backupCount=1, encoding="utf-8")
-my_handler.setFormatter(log_formatter)
-my_handler.setLevel(logging.DEBUG)
+logging_config = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "console": {
+            "format": logFormatStr
+        },
+        "file": {
+            "format": logFormatStr
+        }
+    },
+    "handlers": {
+        "console_handler": {
+            "class": "logging.StreamHandler",
+            "level": loggerLevel,
+            "formatter": "console",
+            "stream": "ext://sys.stdout"
+        },
+        "file_handler": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "level": loggerLevel,
+            "formatter": "file",
+            "filename": logFile,
+            "maxBytes": 5*1024*1024,
+            "backupCount": 10,
+        }
+    },
+    "loggers": {
+        loggerName: {
+            "handlers": ["console_handler", "file_handler"],
+            "level": loggerLevel
+        }
+    }
+}
 
-logger = logging.getLogger('discord-noticmd-bot')
-logger.setLevel(logging.DEBUG)
+logging.config.dictConfig(config=logging_config)
+logger = logging.getLogger(loggerName)
 
-logger.addHandler(my_handler)
-
-
-def broadcastCriticalMsg(msg:str) -> None:
-    print(msg)
-    logger.critical(msg)
-
-def broadcastErrorMsg(msg:str) -> None:
-    print(msg)
-    logger.error(msg)
-
-def broadcastWarningMsg(msg:str) -> None:
-    print(msg)
-    logger.warning(msg)
-
-def broadcastInfoMsg(msg:str) -> None:
-    print(msg)
-    logger.info(msg)
-
-def broadcastDebugMsg(msg:str) -> None:
-    print(msg)
-    logger.debug(msg)

@@ -45,11 +45,11 @@ def init_config() -> None:
             global CONFIG
             CONFIG = json.load(configfile)
     except FileNotFoundError:
-        broadcastErrorMsg("Cannot find \"config.json\" under current directory.")
-        broadcastErrorMsg("Creating new \"config.json\"...")
+        logger.error("Cannot find \"config.json\" under current directory.")
+        logger.error("Creating new \"config.json\"...")
         with open("./config.json", 'w') as configfile:
             json.dump(SAMPLE_CONFIG, configfile)
-        broadcastErrorMsg("Please fill in all information in \"config.json\" and then run this script again.")
+        logger.error("Please fill in all information in \"config.json\" and then run this script again.")
         # exit
         try:
             sys.exit(-1)
@@ -68,7 +68,7 @@ async def init_fifo() -> None:
             fd = os.open(CONFIG["fifo_path"], os.O_RDONLY | os.O_NONBLOCK, 0)
             fifo = os.fdopen(fd, 'r', encoding="utf-8")
         except Exception as err:
-            broadcastErrorMsg(err)
+            logger.error(err)
             os._exit(-1)
 
 async def close_fifo() -> None:
@@ -89,8 +89,8 @@ async def on_ready():
     global channel
     channel = discord.utils.get(guild.channels, id=CONFIG["discord_channel_id"])
     
-    broadcastInfoMsg(f"Notification in Guild: {guild}")
-    broadcastInfoMsg(f"Notification in Channel: {channel}")
+    logger.info(f"Notification in Guild: {guild}")
+    logger.info(f"Notification in Channel: {channel}")
     
     # get admin's mention string e.g. <@admin_id>
     global MENTION_STR
@@ -101,8 +101,8 @@ async def on_ready():
                 MENTION_STR = member.mention
                 break
         
-        broadcastInfoMsg(f"Admin is: {mention_member}")
-        broadcastInfoMsg(f"Admin MENTION_STR: {MENTION_STR}")
+        logger.info(f"Admin is: {mention_member}")
+        logger.info(f"Admin MENTION_STR: {MENTION_STR}")
     
         # init fifo & enter fifo_waiting_loop
         await fifo_listener.create_task(init_fifo())
@@ -123,7 +123,7 @@ async def on_resumed():
 @client.event
 async def on_message(message:discord.message):
     if message.author != client.user:
-        broadcastInfoMsg(f"{message.author} says: {message.content}")
+        logger.info(f"{message.author} says: {message.content}")
         await asyncio.sleep(0.25)
 
 @client.event
@@ -156,7 +156,7 @@ async def send_msg():
         else:
             loc_msg = msg
         
-        broadcastInfoMsg(f"Sending Message: {loc_msg}")
+        logger.info(f"Sending Message: {loc_msg}")
         await channel.send(loc_msg)
     
     await asyncio.sleep(0)
@@ -164,12 +164,12 @@ async def send_msg():
 async def online_msg():
     global channel
     msg = f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] discord-noticmd-bot online!"
-    broadcastInfoMsg(msg)
+    logger.info(msg)
     await channel.send(msg)
 
 def offline_msg():
     msg = f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] discord-noticmd-bot offline!"
-    broadcastInfoMsg(msg)
+    logger.info(msg)
 
 @client.event
 async def read_fifo() -> None:
@@ -214,7 +214,7 @@ def cutUStrByBytes(data:str, max_byte:int) -> list:
 
 def incr_sleep(step):
     sleep_time = round( (1.3**step) * 600 )
-    broadcastInfoMsg(f"Sleep for {sleep_time/60} minutes")
+    logger.info(f"Sleep for {sleep_time/60} minutes")
     sleep(sleep_time)
 
 if __name__ == "__main__":
