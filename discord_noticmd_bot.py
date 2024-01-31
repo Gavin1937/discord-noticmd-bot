@@ -2,6 +2,8 @@ import os, sys
 import asyncio
 from io import TextIOWrapper
 import json
+from time import time
+import traceback
 from datetime import datetime
 import discord
 from discord import utils
@@ -210,22 +212,38 @@ def cutUStrByBytes(data:str, max_byte:int) -> list:
     return [idx, bdata[:idx].decode("utf-8")]
 
 
+def incr_sleep(step):
+    sleep_time = round( (1.3**step) * 600 )
+    broadcastInfoMsg(f"Sleep for {sleep_time/60} minutes")
+    sleep(sleep_time)
+
 if __name__ == "__main__":
-    try:
-        init_config()
-        client.run(CONFIG["discord_token"])
-        
-        # post processing
-        offline_msg()
-        fifo.close()
-        fifo_listener.stop()
-        fifo_task.cancel()
-        client.loop.stop()
-        asyncio.get_event_loop().stop()
-        
-    except KeyboardInterrupt:
-        print()
+    stop_loop = False
+    max_retry = 10
+    retry_count = 0
+    while not stop_loop and retry_count < max_retry:
         try:
-            sys.exit(0)
-        except SystemExit:
-            os._exit(0)
+            init_config()
+            client.run(CONFIG["discord_token"])
+            
+            # post processing
+            offline_msg()
+            fifo.close()
+            fifo_listener.stop()
+            fifo_task.cancel()
+            client.loop.stop()
+            asyncio.get_event_loop().stop()
+            
+            stop_loop = True
+            
+        except KeyboardInterrupt:
+            print()
+            try:
+                sys.exit(0)
+            except SystemExit:
+                os._exit(0)
+        except Exception as err:
+            print(traceback.format_exc())
+            stop_loop = False
+            retry_count += 1
+            incr_sleep(retry_count)
