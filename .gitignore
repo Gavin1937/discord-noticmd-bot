@@ -2,6 +2,7 @@
 # dirs
 /.vscode/
 /__pycache__/
+/.venv/
 
 # files
 *.json
@@ -13,3 +14,4 @@
 
 # whitelist
 !greeting.sh
+!requirements.txt
