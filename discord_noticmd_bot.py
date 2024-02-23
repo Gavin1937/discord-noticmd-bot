@@ -2,7 +2,7 @@ import os, sys
 import asyncio
 from io import TextIOWrapper
 import json
-from time import time
+from time import time, sleep
 import traceback
 from datetime import datetime
 import discord
