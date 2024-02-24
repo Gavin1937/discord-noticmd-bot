@@ -93,13 +93,18 @@ async def on_ready():
     logger.info(f"Notification in Channel: {channel}")
     
     # get admin's mention string e.g. <@admin_id>
+    mention_member:discord.Member = None
     global MENTION_STR
     if len(MENTION_STR) == 0:
+        MENTION_STR = CONFIG["admin_discord_name"]
         for member in guild.members:
             if str(member) == CONFIG["admin_discord_name"]:
                 mention_member:discord.Member = member
                 MENTION_STR = member.mention
                 break
+        if mention_member is None:
+            MENTION_STR = None
+            raise RuntimeError("Cannot find admin_discord_name from guild.members")
         
         logger.info(f"Admin is: {mention_member}")
         logger.info(f"Admin MENTION_STR: {MENTION_STR}")
